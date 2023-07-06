@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<div class="centre">
+  < <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <title>Chatbot</title>
+    </head>
+    <style>
+      html,
+      body {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+  
+      .chat-container {
+        text-align: center;
+      }
+      #chat-log {
+      height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+    </style>
+    <body>
+      <h1>Welcome to the Chatbot!</h1>
+      <p>Please ask me a question c:</p>
+
+      <div id="chat-container">
+        <div id="chat-log"></div>
+        <div id="user-input">
+          <input type="text" id="user-input-textbox" />
+          <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+
+      <script>
+        const chatLog = document.getElementById("chat-log");
+        const userInputTextbox = document.getElementById("user-input-textbox");
+
+        async function sendMessage() {
+          const userInput = userInputTextbox.value;
+
+          if (!userInput) {
+            return;
+          }
+
+          const messageElement = document.createElement("p");
+          messageElement.innerHTML = `<strong>You:</strong> ${userInput}`;
+          chatLog.appendChild(messageElement);
+
+          userInputTextbox.value = "";
+
+          const response = await fetch("/chat", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userInput }),
+          });
+
+          const { botAnswer } = await response.json();
+
+          const botMessageElement = document.createElement("p");
+          botMessageElement.innerHTML = `<strong>Bot:</strong> ${botAnswer}`;
+          chatLog.appendChild(botMessageElement);
+        }
+      </script>
+    </body>
+</div>
+
+</html>
